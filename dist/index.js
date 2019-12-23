@@ -137,7 +137,7 @@ async function setupMsvc() {
 
         const vcVarsAll = path.join(installationPath, 'VC\\Auxiliary\\Build\\vcvarsall.bat')
         const arch = core.getInput('arch');
-        const { stdout } = await exec.exec('cmd.exe', ['/q', '/c', '*', vcVarsAll, arch, '&', 'set']);
+        const { stdout } = await exec.exec('cmd.exe', ['/q', '/c', vcVarsAll, arch, '&', 'set']);
         var environment = stdout.split('\r\n')
         for (let string of environment) {
             const [name, value] = string.split('=')
