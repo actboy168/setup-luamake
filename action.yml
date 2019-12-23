@@ -1,0 +1,5 @@
+name: 'Install luamake'
+description: 'Installs luamake and adds it to the path'
+runs:
+  using: 'node12'
+  main: 'index.js'

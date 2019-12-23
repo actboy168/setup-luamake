@@ -1,0 +1,20 @@
+{
+  "name": "setup-luamake",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/actboy168/setup-luamake.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/actboy168/setup-luamake/issues"
+  },
+  "homepage": "https://github.com/actboy168/setup-luamake#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.0"
+  }
+}
