@@ -1,5 +1,9 @@
 name: 'Install luamake'
 description: 'Installs luamake and adds it to the path'
+inputs:
+  arch:
+    description: Target architecture(only msvc)
+    default: x64
 runs:
   using: 'node12'
   main: 'dist/index.js'
