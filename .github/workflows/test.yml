@@ -1,0 +1,31 @@
+name: test
+on: push
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows, ubuntu, macos]
+        arch: [x86, x64]
+        include:
+        - os: windows
+          plat: msvc
+        - os: ubuntu
+          plat: linux
+        - os: macos
+          plat: macos
+        exclude:
+        - os: ubuntu
+          arch: x86
+        - os: macos
+          arch: x86
+    steps:
+    - uses: actions/checkout@v1
+    - uses: seanmiddleditch/gha-setup-ninja@v1
+    - if: runner.os == 'Windows'
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{ matrix.arch }}
+    - run: luamake
+      shell: bash
