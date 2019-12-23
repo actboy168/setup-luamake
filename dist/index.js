@@ -94,7 +94,6 @@ const core = __webpack_require__(626)
 const exec = __webpack_require__(28)
 const process = __webpack_require__(765)
 const path = __webpack_require__(622)
-const execFile = __webpack_require__(669).promisify(__webpack_require__(129).execFile)
 
 const InterestingVariables = [
     'INCLUDE',
@@ -154,10 +153,10 @@ async function setupNinja(platform, luamakeDir) {
         core.addPath(luamakeDir + "\\tools")
     }
     else if (platform === 'macos') {
-        await exec.exec('brew', ['install', 'ninja'], { encoding: 'utf8' })
+        await exec.exec('brew', ['install', 'ninja'])
     }
     else if (platform === 'linux') {
-        await exec.exec('sudo', ['apt-get', 'install', '-y', 'libreadline-dev', 'ninja-build'], { encoding: 'utf8' })
+        await exec.exec('sudo', ['apt-get', 'install', '-y', 'libreadline-dev', 'ninja-build'])
     }
 }
 
@@ -167,7 +166,7 @@ async function run() {
         const platform = getPlatform()
         const luamakeDir = path.resolve(process.cwd(), 'luamake')
         await setupNinja(platform, luamakeDir)
-        await exec.exec('ninja', ['-f', 'ninja/' + platform + '.ninja'], { encoding: 'utf8', cwd: luamakeDir })
+        await exec.exec('ninja', ['-f', 'ninja/' + platform + '.ninja'], { cwd: luamakeDir })
         core.addPath(luamakeDir)
     } catch (error) {
         core.setFailed(error.message)

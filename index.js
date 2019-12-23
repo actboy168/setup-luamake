@@ -2,7 +2,6 @@ const core = require('@actions/core')
 const exec = require('@actions/exec')
 const process = require('process')
 const path = require('path')
-const execFile = require('util').promisify(require('child_process').execFile)
 
 const InterestingVariables = [
     'INCLUDE',
@@ -62,10 +61,10 @@ async function setupNinja(platform, luamakeDir) {
         core.addPath(luamakeDir + "\\tools")
     }
     else if (platform === 'macos') {
-        await exec.exec('brew', ['install', 'ninja'], { encoding: 'utf8' })
+        await exec.exec('brew', ['install', 'ninja'])
     }
     else if (platform === 'linux') {
-        await exec.exec('sudo', ['apt-get', 'install', '-y', 'libreadline-dev', 'ninja-build'], { encoding: 'utf8' })
+        await exec.exec('sudo', ['apt-get', 'install', '-y', 'libreadline-dev', 'ninja-build'])
     }
 }
 
@@ -75,7 +74,7 @@ async function run() {
         const platform = getPlatform()
         const luamakeDir = path.resolve(process.cwd(), 'luamake')
         await setupNinja(platform, luamakeDir)
-        await exec.exec('ninja', ['-f', 'ninja/' + platform + '.ninja'], { encoding: 'utf8', cwd: luamakeDir })
+        await exec.exec('ninja', ['-f', 'ninja/' + platform + '.ninja'], { cwd: luamakeDir })
         core.addPath(luamakeDir)
     } catch (error) {
         core.setFailed(error.message)
