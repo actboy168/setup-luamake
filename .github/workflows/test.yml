@@ -27,5 +27,6 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: ${{ matrix.arch }}
+    - uses: actboy168/setup-luamake@master
     - run: luamake
       shell: bash
