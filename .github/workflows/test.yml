@@ -15,9 +15,5 @@ jobs:
           arch: x86
     steps:
     - uses: actions/checkout@v1
-    - if: runner.os == 'Windows'
-      uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: ${{ matrix.arch }}
     - uses: actboy168/setup-luamake@master
     - run: luamake help
