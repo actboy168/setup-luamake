@@ -3,26 +3,36 @@ const process = require('process')
 const child_process = require('child_process')
 const path = require('path')
 
-const selectPlatforn = (platform) =>
-    platform ? [null, platform] :
-        process.platform === 'win32' ? [null, 'msvc'] :
-            process.platform === 'darwin' ? [null, 'macos'] :
-                process.platform === 'linux' ? [null, 'linux'] :
-                    [new Error(`Unsupported platform '${process.platform}'`), '']
-
-function runs(command, args) {
-    const result = child_process.spawnSync(command, args, { encoding: 'utf8' })
-    if (result.error) throw result.error
-    console.log('$ '+command+' '+args.join(" "))
-    console.log(result.stdout)
+function getPlatform() {
+    if (process.platform === 'win32') {
+        return 'msvc'
+    }
+    if (process.platform === 'darwin') {
+        return 'macos'
+    }
+    if (process.platform === 'linux') {
+        return 'linux'
+    }
+    throw new Error(`Unsupported platform '${process.platform}'`)
 }
 
+function runs(command, args, options) {
+    console.log('$ ' + command + ' ' + args.join(" "))
+    const result = child_process.spawnSync(command, args, options)
+    if (result.error) {
+        throw result.error
+    }
+    if (result.status !== 0) {
+        throw result.stderr
+    }
+    console.log(result.stdout)
+}
 try {
-    const [error, platform] = selectPlatforn(core.getInput('platform'));
-    if (error) throw error
-    runs('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'])
-    runs('ninja', ['-f', 'ninja/'+platform+'.ninja'])
-    core.addPath(path.resolve(process.cwd(), 'luamake'))
+    const platform = getPlatform()
+    const luamakeDir = path.resolve(process.cwd(), 'luamake')
+    runs('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'], { encoding: 'utf8' })
+    runs('ninja', ['-f', 'ninja/' + platform + '.ninja'], { encoding: 'utf8', cwd: luamakeDir })
+    core.addPath(luamakeDir)
 } catch (error) {
     core.setFailed(error.message)
 }
