@@ -157,7 +157,7 @@ async function setupNinja(platform, luamakeDir) {
         await exec.exec('brew', ['install', 'ninja'], { encoding: 'utf8' })
     }
     else if (platform === 'linux') {
-        await exec.exec('sudo', ['apt-get', 'install', '-y', 'ninja-build'], { encoding: 'utf8' })
+        await exec.exec('sudo', ['apt-get', 'install', '-y', 'libreadline-dev', 'ninja-build'], { encoding: 'utf8' })
     }
 }
 
