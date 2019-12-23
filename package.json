@@ -21,6 +21,7 @@
     },
     "devDependencies": {
         "@actions/core": "^1.2.0",
+        "@actions/exec": "^1.0.2",
         "@zeit/ncc": "^0.20.5"
     }
 }
