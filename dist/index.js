@@ -62,6 +62,11 @@ try {
     const [error, platform] = selectPlatforn(core.getInput('platform'));
     if (error) throw error
 
+    const result = child_process.spawnSync('git', ['--version'], { encoding: 'utf8' })
+    if (result.error) throw result.error
+    console.log('$ git ---version')
+    console.log(result.stdout)
+
     const cloneLuamake = 'git clone --recurse-submodules -j8 --depth 1 https://github.com/actboy168/luamake'
     const cloneResult = child_process.spawnSync(cloneLuamake, { encoding: 'utf8' })
     if (cloneResult.error) throw cloneResult.error
