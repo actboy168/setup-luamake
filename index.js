@@ -41,7 +41,7 @@ async function setupMsvc() {
             }
         };
         await exec.exec('"C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe"', ['-latest', '-products', '*', '-requires', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '-property', 'installationPath'], options);
-        core.info(`installationPath = ${installationPath}`);
+        installationPath = installationPath.replace(/(\r|\n)/gi, "");
 
         const vcVarsAll = path.join(installationPath, 'VC\\Auxiliary\\Build\\vcvarsall.bat')
         const arch = core.getInput('arch');
