@@ -16,13 +16,13 @@ try {
 
     const cloneLuamake = 'git clone --recurse-submodules -j8 --depth 1 https://github.com/actboy168/luamake'
     const cloneResult = child_process.spawnSync(cloneLuamake, { encoding: 'utf8' })
-    if (cloneResult.error) throw error
+    if (cloneResult.error) throw cloneResult.error
     console.log('$ ' + cloneLuamake)
     console.log(cloneResult.stdout)
 
     const compileLuamake = 'ninja -f ninja/'+platform+'.ninja'
     const compileResult = child_process.spawnSync(compileLuamake, { encoding: 'utf8' })
-    if (cloneResult.error) throw error
+    if (compileResult.error) throw compileResult.error
     console.log('$ ' + compileLuamake)
     console.log(cloneResult.stdout)
 
