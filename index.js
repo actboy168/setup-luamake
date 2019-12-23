@@ -1,7 +1,6 @@
 const core = require('@actions/core')
 const exec = require('@actions/exec')
 const process = require('process')
-const child_process = require('child_process')
 const path = require('path')
 
 function getPlatform() {
@@ -15,18 +14,6 @@ function getPlatform() {
         return 'linux'
     }
     throw new Error(`Unsupported platform '${process.platform}'`)
-}
-
-function runs(command, args, options) {
-    console.log('$ ' + command + ' ' + args.join(" "))
-    const result = child_process.spawnSync(command, args, options)
-    if (result.error) {
-        throw result.error
-    }
-    if (result.status !== 0) {
-        throw result.stderr
-    }
-    console.log(result.stdout)
 }
 
 async function run() {

@@ -28,5 +28,5 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
     - uses: actboy168/setup-luamake@master
-    - run: luamake
+    - run: luamake help
       shell: bash
