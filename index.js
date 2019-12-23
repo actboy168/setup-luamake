@@ -28,37 +28,31 @@ function getPlatform() {
     throw new Error(`Unsupported platform '${process.platform}'`)
 }
 
+async function spawn(command, args) {
+    var stdout = "";
+    const options = {};
+    options.listeners = {
+        stdout: (data) => stdout += data.toString()
+    };
+    await exec.exec(command, args, options);
+    return stdout;
+}
+
 async function setupMsvc() {
-    try {
-        core.info('setup msvc');
-
-        var installationPath = "";
-        const options = {};
-        options.listeners = {
-            stdout: (data) => {
-                var output = data.toString();
-                installationPath += output;
-            }
-        };
-        await exec.exec('"C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe"', ['-latest', '-products', '*', '-requires', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '-property', 'installationPath'], options);
-        installationPath = installationPath.replace(/(\r|\n)/gi, "");
-
-        const vcVarsAll = path.join(installationPath, 'VC\\Auxiliary\\Build\\vcvarsall.bat')
-        const arch = core.getInput('arch');
-        const { stdout } = await exec.exec('cmd.exe', ['/q', '/c', vcVarsAll, arch, '&', 'set']);
-        var environment = stdout.split('\r\n')
-        for (let string of environment) {
-            const [name, value] = string.split('=')
-            for (let pattern of InterestingVariables) {
-                if (name.match(pattern)) {
-                    core.exportVariable(name, value)
-                    break
-                }
+    var installationPath = await spawn('"C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe"', ['-latest', '-products', '*', '-requires', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '-property', 'installationPath'])
+    installationPath = installationPath.replace(/(\r|\n)/gi, "");
+    const vcVarsAll = path.join(installationPath, 'VC\\Auxiliary\\Build\\vcvarsall.bat')
+    const arch = core.getInput('arch');
+    var environment = await spawn('cmd.exe', ['/q', '/c', vcVarsAll, arch, '&', 'set']);
+    environment = environment.split('\r\n');
+    for (let string of environment) {
+        const [name, value] = string.split('=')
+        for (let pattern of InterestingVariables) {
+            if (name.match(pattern)) {
+                core.exportVariable(name, value)
+                break
             }
         }
-    }
-    catch (error) {
-        throw error
     }
 }
 
