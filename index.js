@@ -64,6 +64,7 @@ async function setupNinja(platform, luamakeDir) {
         await exec.exec('brew', ['install', 'ninja'])
     }
     else if (platform === 'linux') {
+        await exec.exec('sudo', ['apt-get', 'update'])
         await exec.exec('sudo', ['apt-get', 'install', '-y', 'libreadline-dev', 'ninja-build'])
     }
 }
