@@ -15,7 +15,7 @@ jobs:
           arch: x86
     steps:
     - uses: actions/checkout@v1
-    - uses: actboy168/setup-luamake@master
+    - uses: ./
       with:
         arch: ${{ matrix.arch }}
     - run: luamake help
