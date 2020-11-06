@@ -90,6 +90,12 @@ async function run() {
 
         core.addPath(luamakeDir)
         core.debug(`added '${luamakeDir}' to PATH`);
+        if (core.isDebug()) {
+            const result = spawnSync('luamake', ['help'], {encoding: 'utf8'})
+            if (result.error) throw error
+            core.debug(`$ luamake help`)
+            core.debug(result.stdout.trim())
+        }
     } catch (error) {
         core.setFailed(error.message)
     }
