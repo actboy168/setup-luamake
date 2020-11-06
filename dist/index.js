@@ -1080,9 +1080,9 @@ async function setupMsvc() {
 async function setupNinja(platform, luamakeDir) {
     if (platform === 'msvc') {
         await setupMsvc()
-        const dir = path.join(luamakeDir, "tools");
-        core.addPath(dir);
-        core.debug(`added '${dir}' to PATH`);
+        //const dir = path.join(luamakeDir, "tools");
+        //core.addPath(dir);
+        //core.debug(`added '${dir}' to PATH`);
     }
     else if (platform === 'macos') {
         await exec.exec('brew', ['install', 'ninja'])
@@ -1098,7 +1098,7 @@ async function run() {
         await exec.exec('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'], { encoding: 'utf8' })
         const platform = getPlatform()
         const luamakeDir = __webpack_require__.ab + "luamake"
-        //await setupNinja(platform, luamakeDir)
+        await setupNinja(platform, __webpack_require__.ab + "luamake")
         
         if (core.isDebug()) {
             const result = spawnSync('ninja', ['--version'], {encoding: 'utf8'})
