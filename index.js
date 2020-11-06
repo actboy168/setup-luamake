@@ -1,8 +1,10 @@
 const core = require('@actions/core')
 const exec = require('@actions/exec')
+const io = require('@actions/io')
 const spawnSync = require('child_process').spawnSync
 const process = require('process')
 const path = require('path')
+
 
 const InterestingVariables = [
     'INCLUDE',
