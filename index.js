@@ -77,7 +77,7 @@ async function run() {
         await exec.exec('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'], { encoding: 'utf8' })
         const platform = getPlatform()
         const luamakeDir = path.resolve(process.cwd(), 'luamake')
-        await setupNinja(platform, luamakeDir)
+        //await setupNinja(platform, luamakeDir)
         
         if (core.isDebug()) {
             const result = spawnSync('ninja', ['--version'], {encoding: 'utf8'})
@@ -90,16 +90,6 @@ async function run() {
 
         core.addPath(luamakeDir)
         core.debug(`added '${luamakeDir}' to PATH`);
-        if (core.isDebug()) {
-            const result = spawnSync('luamake', ['help'], {encoding: 'utf8'})
-            if (result.error) {
-                core.setFailed(result.error)
-            }
-            else {
-                core.debug(`$ luamake help`)
-                core.debug(result.stdout.trim())
-            }
-        }
     } catch (error) {
         core.setFailed(error.message)
     }
