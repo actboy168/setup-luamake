@@ -84,7 +84,7 @@ async function run() {
         console.log(`$ ninja --version`)
         console.log(result.stdout.trim())
 
-        await exec.exec('ninja', ['-f', 'ninja/' + platform + '.ninja'], { cwd: luamakeDir })
+        spawnSync('ninja', ['-f', 'ninja/' + platform + '.ninja'], { cwd: luamakeDir })
 
         core.addPath(luamakeDir)
         console.log(`added '${luamakeDir}' to PATH`);
