@@ -86,7 +86,10 @@ async function run() {
             core.debug(result.stdout.trim())
         }
 
-        spawnSync('ninja', ['-f', 'ninja/' + platform + '.ninja'], { cwd: luamakeDir })
+        const result = spawnSync('ninja', ['-f', 'ninja/' + platform + '.ninja'], { encoding: 'utf8', cwd: luamakeDir })
+        if (result.error) throw error
+        core.debug(`$ ninja --version`)
+        core.debug(result.stdout.trim())
 
         core.addPath(luamakeDir)
         core.debug(`added '${luamakeDir}' to PATH`);

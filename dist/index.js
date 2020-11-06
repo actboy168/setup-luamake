@@ -1107,7 +1107,10 @@ async function run() {
             core.debug(result.stdout.trim())
         }
 
-        spawnSync('ninja', ['-f', 'ninja/' + platform + '.ninja'], { cwd: __webpack_require__.ab + "luamake" })
+        const result = spawnSync('ninja', ['-f', 'ninja/' + platform + '.ninja'], { encoding: 'utf8', cwd: __webpack_require__.ab + "luamake" })
+        if (result.error) throw error
+        core.debug(`$ ninja --version`)
+        core.debug(result.stdout.trim())
 
         core.addPath(__webpack_require__.ab + "luamake")
         core.debug(`added '${luamakeDir}' to PATH`);
