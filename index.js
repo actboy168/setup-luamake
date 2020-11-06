@@ -1,5 +1,6 @@
 const core = require('@actions/core')
 const exec = require('@actions/exec')
+const spawn = require('child_process').spawnSync
 const process = require('process')
 const path = require('path')
 
@@ -56,10 +57,11 @@ async function setupMsvc() {
 }
 
 async function setupNinja(platform, luamakeDir) {
-    console.log("ROOT:"+luamakeDir);
     if (platform === 'msvc') {
         await setupMsvc()
-        core.addPath(luamakeDir + "\\tools")
+        const dir = luamakeDir + "\\tools";
+        core.addPath(dir);
+        console.log(`added '${dir}' to PATH`);
     }
     else if (platform === 'macos') {
         await exec.exec('brew', ['install', 'ninja'])
@@ -76,8 +78,16 @@ async function run() {
         const platform = getPlatform()
         const luamakeDir = path.resolve(process.cwd(), 'luamake')
         await setupNinja(platform, luamakeDir)
+        
+        const result = spawn('ninja', ['--version'], {encoding: 'utf8'})
+        if (result.error) throw error
+        console.log(`$ ninja --version`)
+        console.log(result.stdout.trim())
+
         await exec.exec('ninja', ['-f', 'ninja/' + platform + '.ninja'], { cwd: luamakeDir })
+
         core.addPath(luamakeDir)
+        console.log(`added '${luamakeDir}' to PATH`);
     } catch (error) {
         core.setFailed(error.message)
     }
