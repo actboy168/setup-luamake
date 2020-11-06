@@ -1,6 +1,6 @@
 const core = require('@actions/core')
 const exec = require('@actions/exec')
-const spawn = require('child_process').spawnSync
+const spawnSync = require('child_process').spawnSync
 const process = require('process')
 const path = require('path')
 
@@ -79,7 +79,7 @@ async function run() {
         const luamakeDir = path.resolve(process.cwd(), 'luamake')
         await setupNinja(platform, luamakeDir)
         
-        const result = spawn('ninja', ['--version'], {encoding: 'utf8'})
+        const result = spawnSync('ninja', ['--version'], {encoding: 'utf8'})
         if (result.error) throw error
         console.log(`$ ninja --version`)
         console.log(result.stdout.trim())

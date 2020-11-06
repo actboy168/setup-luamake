@@ -105,6 +105,7 @@ exports.exec = exec;
 
 const core = __webpack_require__(626)
 const exec = __webpack_require__(28)
+const spawnSync = __webpack_require__(129).spawnSync
 const process = __webpack_require__(765)
 const path = __webpack_require__(622)
 
@@ -161,10 +162,11 @@ async function setupMsvc() {
 }
 
 async function setupNinja(platform, luamakeDir) {
-    console.log("ROOT:"+luamakeDir);
     if (platform === 'msvc') {
         await setupMsvc()
-        core.addPath(luamakeDir + "\\tools")
+        const dir = luamakeDir + "\\tools";
+        core.addPath(dir);
+        console.log(`added '${dir}' to PATH`);
     }
     else if (platform === 'macos') {
         await exec.exec('brew', ['install', 'ninja'])
@@ -181,8 +183,16 @@ async function run() {
         const platform = getPlatform()
         const luamakeDir = __webpack_require__.ab + "luamake"
         await setupNinja(platform, __webpack_require__.ab + "luamake")
+        
+        const result = spawnSync('ninja', ['--version'], {encoding: 'utf8'})
+        if (result.error) throw error
+        console.log(`$ ninja --version`)
+        console.log(result.stdout.trim())
+
         await exec.exec('ninja', ['-f', 'ninja/' + platform + '.ninja'], { cwd: __webpack_require__.ab + "luamake" })
+
         core.addPath(__webpack_require__.ab + "luamake")
+        console.log(`added '${luamakeDir}' to PATH`);
     } catch (error) {
         core.setFailed(error.message)
     }
