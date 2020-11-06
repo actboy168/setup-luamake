@@ -56,6 +56,7 @@ async function setupMsvc() {
 }
 
 async function setupNinja(platform, luamakeDir) {
+    console.log("ROOT:"+luamakeDir);
     if (platform === 'msvc') {
         await setupMsvc()
         core.addPath(luamakeDir + "\\tools")
