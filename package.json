@@ -24,6 +24,6 @@
         "@actions/exec": "^1.0.4"
     },
     "devDependencies": {
-        "@zeit/ncc": "^0.20.5"
+        "@vercel/ncc": "^0.25.1"
     }
 }
