@@ -58,7 +58,9 @@ async function setupMsvc() {
 async function setupNinja(platform, luamakeDir) {
     if (platform === 'msvc') {
         await setupMsvc()
-        core.addPath(luamakeDir + "\\tools")
+        const ninjaPath = path.join(luamakeDir, "tools")
+        core.debug(`Added to PATH: ${ninjaPath}`)
+        core.addPath(ninjaPath)
     }
     else if (platform === 'macos') {
         await exec.exec('brew', ['install', 'ninja'])
@@ -76,6 +78,7 @@ async function run() {
         const luamakeDir = path.resolve(process.cwd(), 'luamake')
         await setupNinja(platform, luamakeDir)
         await exec.exec('ninja', ['-f', 'ninja/' + platform + '.ninja'], { cwd: luamakeDir })
+        core.debug(`Added to PATH: ${luamakeDir}`)
         core.addPath(luamakeDir)
     } catch (error) {
         core.setFailed(error.message)
