@@ -5,5 +5,16 @@ inputs:
     description: Target architecture(only msvc)
     default: x64
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: "composite"
+  steps: 
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{ inputs.arch }}
+    - run: choco install -y ninja
+    - uses: actions/checkout@v2
+      with:
+        repository: actboy168/luamake
+        submodules: recursive
+        path: $GITHUB_WORKSPACE/luamake
+    - run: cd $GITHUB_WORKSPACE/luamake && ninja -f ninja/msvc.ninja
+    - run: echo "$GITHUB_WORKSPACE/luamake" >> $GITHUB_PATH
