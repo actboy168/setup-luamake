@@ -75,7 +75,7 @@ async function run() {
     try {
         await exec.exec('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'], { encoding: 'utf8' })
         const platform = getPlatform()
-        const luamakeDir = path.resolve(process.cwd(), 'luamake')
+        const luamakeDir = path.resolve('./luamake')
         await setupNinja(platform, luamakeDir)
         await exec.exec('ninja', ['-f', 'ninja/' + platform + '.ninja'], { cwd: luamakeDir })
         core.debug(`Added to PATH: ${luamakeDir}`)
