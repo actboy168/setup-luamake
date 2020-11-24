@@ -82,11 +82,11 @@ async function run() {
     try {
         await exec.exec('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'], { encoding: 'utf8' })
         const platform = getPlatform()
-        const luamakeDir = __webpack_require__.ab + "luamake"
-        await setupNinja(platform, __webpack_require__.ab + "luamake")
-        await exec.exec('ninja', ['-f', 'ninja/' + platform + '.ninja'], { cwd: __webpack_require__.ab + "luamake" })
+        const luamakeDir = path.resolve('./luamake')
+        await setupNinja(platform, luamakeDir)
+        await exec.exec('ninja', ['-f', 'ninja/' + platform + '.ninja'], { cwd: luamakeDir })
         core.debug(`Added to PATH: ${luamakeDir}`)
-        core.addPath(__webpack_require__.ab + "luamake")
+        core.addPath(luamakeDir)
     } catch (error) {
         core.setFailed(error.message)
     }
