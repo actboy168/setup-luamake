@@ -2,20 +2,14 @@ name: test
 on: push
 jobs:
   test:
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows, ubuntu, macos]
-        arch: [x86, x64]
-        exclude:
-        - os: ubuntu
-          arch: x86
-        - os: macos
-          arch: x86
+        os: [windows-latest, ubuntu-1604, ubuntu-1804, ubuntu-2004, macos-latest]
     steps:
     - uses: actions/checkout@v1
     - uses: ./
       with:
-        arch: ${{ matrix.arch }}
+        arch: x64
     - run: luamake help
