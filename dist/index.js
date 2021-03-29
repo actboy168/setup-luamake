@@ -10,83 +10,27 @@ const exec = __webpack_require__(514)
 const process = __webpack_require__(765)
 const path = __webpack_require__(622)
 
-const InterestingVariables = [
-    'INCLUDE',
-    'LIB',
-    'LIBPATH',
-    'Path',
-    'Platform',
-    /^VCTools/,
-    /^VSCMD_/,
-    /^WindowsSDK/i,
-]
-
-function getPlatform() {
-    if (process.platform === 'win32') {
-        return 'msvc'
-    }
-    if (process.platform === 'darwin') {
-        return 'macos'
-    }
-    if (process.platform === 'linux') {
-        return 'linux'
-    }
-    throw new Error(`Unsupported platform '${process.platform}'`)
-}
-
-async function spawn(command, args) {
-    var stdout = "";
-    const options = {};
-    options.listeners = {
-        stdout: (data) => stdout += data.toString()
-    };
-    await exec.exec(command, args, options);
-    return stdout;
-}
-
-async function setupMsvc() {
-    var installationPath = await spawn('"C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe"', ['-latest', '-products', '*', '-requires', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '-property', 'installationPath'])
-    installationPath = installationPath.replace(/(\r|\n)/gi, "");
-    const vcVarsAll = path.join(installationPath, 'VC\\Auxiliary\\Build\\vcvarsall.bat')
-    const arch = core.getInput('arch');
-    var environment = await spawn('cmd.exe', ['/q', '/c', vcVarsAll, arch, '&', 'set']);
-    environment = environment.split('\r\n');
-    for (let string of environment) {
-        const [name, value] = string.split('=')
-        for (let pattern of InterestingVariables) {
-            if (name.match(pattern)) {
-                core.exportVariable(name, value)
-                break
-            }
-        }
-    }
-}
-
-async function setupNinja(platform, luamakeDir) {
-    if (platform === 'msvc') {
-        await setupMsvc()
-        const ninjaPath = path.join(luamakeDir, "tools")
-        core.debug(`Added to PATH: ${ninjaPath}`)
-        core.addPath(ninjaPath)
-    }
-    else if (platform === 'macos') {
-        await exec.exec('brew', ['install', 'ninja'])
-    }
-    else if (platform === 'linux') {
-        await exec.exec('sudo', ['apt-get', 'update'])
-        await exec.exec('sudo', ['apt-get', 'install', '-y', 'libreadline-dev', 'ninja-build'])
-        await exec.exec('sudo', ['update-alternatives', '--install', '/usr/bin/gcc', 'gcc', '/usr/bin/gcc-9', '100'])
-        await exec.exec('sudo', ['update-alternatives', '--install', '/usr/bin/g++', 'g++', '/usr/bin/g++-9', '100'])
-    }
-}
-
 async function run() {
     try {
         await exec.exec('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'], { encoding: 'utf8' })
-        const platform = getPlatform()
         const luamakeDir = path.resolve('./luamake')
-        await setupNinja(platform, luamakeDir)
-        await exec.exec('ninja', ['-f', 'ninja/' + platform + '.ninja'], { cwd: luamakeDir })
+        if (process.platform === 'win32') {
+            await exec.exec('cmd.exe', ['/q', '/c', '.\\compile\\msvc_x64.bat'], { cwd: luamakeDir })
+        }
+        else if (process.platform === 'darwin') {
+            await exec.exec('brew', ['install', 'ninja'])
+            await exec.exec('ninja', ['-f', 'ninja/macos.ninja'], { cwd: luamakeDir })
+        }
+        else if (process.platform === 'linux') {
+            await exec.exec('sudo', ['apt-get', 'update'])
+            await exec.exec('sudo', ['apt-get', 'install', '-y', 'libreadline-dev', 'ninja-build'])
+            await exec.exec('sudo', ['update-alternatives', '--install', '/usr/bin/gcc', 'gcc', '/usr/bin/gcc-9', '100'])
+            await exec.exec('sudo', ['update-alternatives', '--install', '/usr/bin/g++', 'g++', '/usr/bin/g++-9', '100'])
+            await exec.exec('ninja', ['-f', 'ninja/linux.ninja'], { cwd: luamakeDir })
+        }
+        else {
+            throw new Error(`Unsupported platform '${process.platform}'`)
+        }
         core.debug(`Added to PATH: ${luamakeDir}`)
         core.addPath(luamakeDir)
     } catch (error) {
