@@ -15,7 +15,13 @@ async function run() {
         await exec.exec('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'], { encoding: 'utf8' })
         const luamakeDir = path.resolve('./luamake')
         if (process.platform === 'win32') {
-            await exec.exec('cmd.exe', ['/q', '/c', '.\\compile\\msvc_x64.bat'], { cwd: luamakeDir })
+            const arch = core.getInput('arch');
+            if (arch == "x86") {
+                await exec.exec('cmd.exe', ['/q', '/c', '.\\compile\\msvc_x86.bat'], { cwd: luamakeDir })
+            }
+            else {
+                await exec.exec('cmd.exe', ['/q', '/c', '.\\compile\\msvc_x64.bat'], { cwd: luamakeDir })
+            }
         }
         else if (process.platform === 'darwin') {
             await exec.exec('brew', ['install', 'ninja'])
