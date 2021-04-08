@@ -19,16 +19,16 @@ async function run() {
         }
         else if (process.platform === 'darwin') {
             await exec.exec('brew', ['install', 'ninja'])
-            await exec.exec('chmod', ['+x', './compile/install.sh'], { cwd: luamakeDir })
-            await exec.exec('./compile/install.sh', { cwd: luamakeDir })
+            await exec.exec('chmod', ['+x', 'compile/install.sh'], { cwd: luamakeDir })
+            await exec.exec('compile/install.sh', [], { cwd: luamakeDir })
         }
         else if (process.platform === 'linux') {
             await exec.exec('sudo', ['apt-get', 'update'])
             await exec.exec('sudo', ['apt-get', 'install', '-y', 'libreadline-dev', 'ninja-build'])
             await exec.exec('sudo', ['update-alternatives', '--install', '/usr/bin/gcc', 'gcc', '/usr/bin/gcc-9', '100'])
             await exec.exec('sudo', ['update-alternatives', '--install', '/usr/bin/g++', 'g++', '/usr/bin/g++-9', '100'])
-            await exec.exec('chmod', ['+x', './compile/install.sh'], { cwd: luamakeDir })
-            await exec.exec('./compile/install.sh', { cwd: luamakeDir })
+            await exec.exec('chmod', ['+x', 'compile/install.sh'], { cwd: luamakeDir })
+            await exec.exec('compile/install.sh', [], { cwd: luamakeDir })
         }
         else {
             throw new Error(`Unsupported platform '${process.platform}'`)
