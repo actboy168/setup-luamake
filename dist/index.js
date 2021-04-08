@@ -33,8 +33,6 @@ async function run() {
         else {
             throw new Error(`Unsupported platform '${process.platform}'`)
         }
-        core.debug(`Added to PATH: ${luamakeDir}`)
-        core.addPath(luamakeDir)
     } catch (error) {
         core.setFailed(error.message)
     }
