@@ -4,6 +4,9 @@ inputs:
   arch:
     description: Target architecture(only msvc)
     default: x64
+branding:
+  icon: 'activity'
+  color: 'blue'
 runs:
   using: 'node12'
   main: 'dist/index.js'
