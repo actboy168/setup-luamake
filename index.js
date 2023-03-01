@@ -27,7 +27,7 @@ async function run() {
                 './luamake/luamake.exe',
                 './luamake/tools/lua54.dll'
             ]
-            const key = 'win32-'+hash
+            const key = [ "windows", hash ].join("-")
             await doAction(paths, key, async function() {
                 await exec.exec('cmd.exe', ['/q', '/c', '.\\compile\\build.bat', 'notest'], { cwd: luamakeDir })
             })
@@ -37,7 +37,7 @@ async function run() {
             const paths = [
                 './luamake/luamake'
             ]
-            const key = 'darwin-'+hash
+            const key = [ "macos", hash ].join("-")
             await doAction(paths, key, async function() {
                 await exec.exec('chmod', ['+x', 'compile/build.sh'], { cwd: luamakeDir })
                 await exec.exec('compile/build.sh', ["notest"], { cwd: luamakeDir })
@@ -49,7 +49,8 @@ async function run() {
             const paths = [
                 './luamake/luamake'
             ]
-            const key = 'linux-'+hash
+            const version = (await exec.getExecOutput('lsb_release', ['-r', '-s'])).stdout.trim();
+            const key = [ "ubuntu", version, hash ].join("-")
             if (await doAction(paths, key, async function() {
                 await exec.exec('sudo', ['apt-get', 'update'])
                 await exec.exec('sudo', ['apt-get', 'install', '-y', 'libreadline-dev', 'ninja-build'])
