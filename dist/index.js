@@ -57887,7 +57887,7 @@ async function doAction(paths, key, action) {
     const restoreKey = await cache.restoreCache(paths, key, []);
     if (restoreKey !== undefined) {
         console.debug(`Cache ${key} restore.`);
-        return false
+        return true
     }
     await action()
     try {
@@ -57896,7 +57896,7 @@ async function doAction(paths, key, action) {
     } catch (error) {
         console.debug(error.message);
     }
-    return true
+    return false
 }
 
 async function run() {
@@ -57907,8 +57907,8 @@ async function run() {
         const hash = (await exec.getExecOutput('git', ['rev-parse', 'HEAD'], { cwd: luamakedir })).stdout.trim();
         if (process.platform === 'win32') {
             const paths = [
-                'luamake/luamake.exe',
-                'tools/lua54.dll'
+                path.join(luamakedir, 'luamake.exe'),
+                path.join(luamakedir, 'tools', 'lua54.dll')
             ]
             const key = [ "windows", hash ].join("-")
             await doAction(paths, key, async function() {
@@ -57918,7 +57918,7 @@ async function run() {
         else if (process.platform === 'darwin') {
             await exec.exec('brew', ['install', 'ninja'])
             const paths = [
-                'luamake/luamake'
+                path.join(luamakedir, 'luamake')
             ]
             const key = [ "macos", hash ].join("-")
             await doAction(paths, key, async function() {
@@ -57930,7 +57930,7 @@ async function run() {
             await exec.exec('sudo', ['update-alternatives', '--install', '/usr/bin/gcc', 'gcc', '/usr/bin/gcc-9', '100'])
             await exec.exec('sudo', ['update-alternatives', '--install', '/usr/bin/g++', 'g++', '/usr/bin/g++-9', '100'])
             const paths = [
-                'luamake/luamake'
+                path.join(luamakedir, 'luamake')
             ]
             const version = (await exec.getExecOutput('lsb_release', ['-r', '-s'])).stdout.trim();
             const key = [ "ubuntu", version, hash ].join("-")
