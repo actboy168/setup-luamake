@@ -4123,7 +4123,7 @@ const path = __nccwpck_require__(17)
 
 async function run() {
     try {
-        const workdir = process.env['GITHUB_WORKSPACE']
+        const workdir = process.env['RUNNER_TOOL_CACHE']
         await exec.exec('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'], { cwd: workdir, encoding: 'utf8' })
         const luamakedir = path.join(workdir, 'luamake')
         if (process.platform === 'win32') {
