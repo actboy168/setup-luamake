@@ -22,9 +22,9 @@ async function doAction(paths, key, action) {
 
 async function run() {
     try {
-        const cachedir = process.env['RUNNER_TOOL_CACHE']
-        await exec.exec('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'], { cwd: cachedir, encoding: 'utf8' })
-        const luamakedir = path.join(cachedir, 'luamake')
+        const workdir = process.env['RUNNER_WORKSPACE']
+        await exec.exec('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'], { cwd: workdir, encoding: 'utf8' })
+        const luamakedir = path.join(workdir, 'luamake')
         const hash = (await exec.getExecOutput('git', ['rev-parse', 'HEAD'], { cwd: luamakedir })).stdout.trim();
         if (process.platform === 'win32') {
             const paths = [
