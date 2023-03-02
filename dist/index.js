@@ -57900,7 +57900,7 @@ async function run() {
     try {
         await exec.exec('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'], { encoding: 'utf8' })
         const luamakeDir = path.resolve('./luamake')
-        const hash = (await exec.getExecOutput('git', ['rev-parse', 'HEAD'])).stdout.trim();
+        const hash = (await exec.getExecOutput('git', ['rev-parse', 'HEAD'], { cwd: luamakeDir })).stdout.trim();
         if (process.platform === 'win32') {
             const paths = [
                 './luamake/luamake.exe',
