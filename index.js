@@ -5,7 +5,7 @@ const process = require('process')
 const path = require('path')
 
 async function doAction(paths, key, action) {
-    const restoreKey = await cache.restoreCache(paths, key, [key]);
+    const restoreKey = await cache.restoreCache(paths, key, []);
     if (restoreKey !== undefined) {
         return false
     }

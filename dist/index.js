@@ -57884,7 +57884,7 @@ const process = __nccwpck_require__(7282)
 const path = __nccwpck_require__(1017)
 
 async function doAction(paths, key, action) {
-    const restoreKey = await cache.restoreCache(paths, key, [key]);
+    const restoreKey = await cache.restoreCache(paths, key, []);
     if (restoreKey !== undefined) {
         return false
     }
