@@ -22,14 +22,14 @@ async function doAction(paths, key, action) {
 
 async function run() {
     try {
-        const workdir = process.env['RUNNER_WORKSPACE']
+        const workdir = process.env['GITHUB_WORKSPACE']
         await exec.exec('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'], { cwd: workdir, encoding: 'utf8' })
         const luamakedir = path.join(workdir, 'luamake')
         const hash = (await exec.getExecOutput('git', ['rev-parse', 'HEAD'], { cwd: luamakedir })).stdout.trim();
         if (process.platform === 'win32') {
             const paths = [
-                path.join(luamakedir, 'luamake.exe'),
-                path.join(luamakedir, 'tools', 'lua54.dll')
+                'luamake/luamake.exe',
+                'tools/lua54.dll'
             ]
             const key = [ "windows", hash ].join("-")
             await doAction(paths, key, async function() {
@@ -39,7 +39,7 @@ async function run() {
         else if (process.platform === 'darwin') {
             await exec.exec('brew', ['install', 'ninja'])
             const paths = [
-                path.join(luamakedir, 'luamake')
+                'luamake/luamake'
             ]
             const key = [ "macos", hash ].join("-")
             await doAction(paths, key, async function() {
@@ -51,7 +51,7 @@ async function run() {
             await exec.exec('sudo', ['update-alternatives', '--install', '/usr/bin/gcc', 'gcc', '/usr/bin/gcc-9', '100'])
             await exec.exec('sudo', ['update-alternatives', '--install', '/usr/bin/g++', 'g++', '/usr/bin/g++-9', '100'])
             const paths = [
-                path.join(luamakedir, 'luamake')
+                'luamake/luamake'
             ]
             const version = (await exec.getExecOutput('lsb_release', ['-r', '-s'])).stdout.trim();
             const key = [ "ubuntu", version, hash ].join("-")
