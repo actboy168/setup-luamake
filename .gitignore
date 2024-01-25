@@ -1,2 +1,3 @@
 /node_modules
 /dist/luamake
+package-lock.json
