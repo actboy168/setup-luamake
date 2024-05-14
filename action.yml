@@ -1,9 +1,9 @@
 name: 'Install luamake'
 description: 'Installs luamake and adds it to the path'
 inputs:
-  arch:
-    description: Target architecture(only msvc)
-    default: x64
+  ref:
+    description: The branch, tag or SHA to checkout.
+    default: master
 branding:
   icon: 'activity'
   color: 'blue'

@@ -5,9 +5,11 @@ const path = require('path')
 
 async function run() {
     try {
+        let git_ref = core.getInput('ref')
         const workdir = process.env['RUNNER_TOOL_CACHE']
-        await exec.exec('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', 'https://github.com/actboy168/luamake'], { cwd: workdir, encoding: 'utf8' })
         const luamakedir = path.join(workdir, 'luamake')
+        await exec.exec('git', ['clone', '--recurse-submodules', '-j8', '--depth', '1', '-n', 'https://github.com/actboy168/luamake'], { cwd: workdir, encoding: 'utf8' })
+        await exec.exec('git', ['checkout', git_ref], { cwd: luamakedir, encoding: 'utf8' })
         if (process.platform === 'win32') {
             await exec.exec('cmd.exe', ['/q', '/c', '.\\compile\\build.bat', 'notest'], { cwd: luamakedir })
         }
