@@ -4138,6 +4138,7 @@ async function run() {
         else if (process.platform === 'linux') {
             await exec.exec('sudo', ['apt-get', 'update'])
             await exec.exec('sudo', ['apt-get', 'install', '-y', 'libreadline-dev', 'ninja-build'])
+            await exec.exec('sudo', ['apt-get', 'install', '-y', 'binutils-dev', 'libunwind-dev'])
             await exec.exec('chmod', ['+x', 'compile/build.sh'], { cwd: luamakedir })
             await exec.exec('compile/build.sh', ["notest"], { cwd: luamakedir })
         }
